@@ -82,7 +82,7 @@ export class DatabaseStorage implements IStorage {
       });
       return user;
     } catch (error) {
-      console.error("Error getting user by ID:", error);
+      console.error(`Error getting user by ID ${id}:`, error);
       throw error;
     }
   }
