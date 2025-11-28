@@ -47,7 +47,7 @@ app.use(helmet({
       // Allow GTM, inline scripts, Zoho scripts, and Onramp SDK
       "script-src": ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://salesiq.zohopublic.in", "https://js.zohocdn.com", "https://static.zohocdn.com", "https://cdn.skypack.dev"],
       // Allow inline styles, Google Fonts, Zoho styles, and Video.js CDN
-      "style-src": ["'self'", "https://fonts.googleapis.com", "'unsafe-inline'", "https://css.zohocdn.com", "https://static.zohocdn.com", "https://vjs.zencdn.net"],
+      "style-src": ["'self'", "https://fonts.googleapis.com", "'unsafe-inline'", "https://css.zohocdn.com", "https://static.zohocdn.com", "https://vjs.zencdn.net", "https://api.fontshare.com"],
       "font-src": ["'self'", "https://fonts.gstatic.com", "https://css.zohocdn.com", "https://static.zohocdn.com", "https://vjs.zencdn.net"], // Allow Google Fonts, Zoho fonts, and Video.js fonts
       // Allow images from self, data URLs, and GitHub avatars
       "img-src": ["'self'", "data:", "https://avatars.githubusercontent.com", "https://images.pexels.com", "https://api.dicebear.com", "https://static.zohocdn.com", "https://css.zohocdn.com", "https://images.unsplash.com"],
