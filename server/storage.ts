@@ -94,7 +94,7 @@ export class DatabaseStorage implements IStorage {
       });
       return user;
     } catch (error) {
-      console.error("Error getting user by username:", error);
+      console.error(`Error getting user by username "${username}":`, error);
       throw error;
     }
   }
