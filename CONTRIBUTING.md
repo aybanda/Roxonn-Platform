@@ -10,6 +10,9 @@ Welcome to the Roxonn Platform! We're excited you're interested in contributing.
 - [Code Style Guidelines](#code-style-guidelines)
 - [Making Contributions](#making-contributions)
 - [Bounty System](#bounty-system)
+  - [Finding Issues to Work On](#finding-issues-to-work-on)
+  - [Label System](#label-system)
+  - [Milestones](#milestones)
 - [Testing](#testing)
 - [Common Tasks](#common-tasks)
 
@@ -362,14 +365,70 @@ Fixes #<issue-number>
 4. **PR is reviewed** and merged by maintainers
 5. **Bounty is distributed** to contributor's Roxonn wallet
 
-### Bounty Labels
+### Finding Issues to Work On
 
+We use a structured label system to help you find the right issues:
+
+**Quick Start - Find beginner issues:**
+```
+status:ready + effort:small + good first issue
+```
+
+**Browse the [Issues page](https://github.com/Roxonn-FutureTech/Roxonn-Platform/issues)** and filter by labels.
+
+### Label System
+
+#### Status Labels
+| Label | Color | Meaning |
+|-------|-------|---------|
+| `status:backlog` | Gray | Not yet prioritized - may need discussion |
+| `status:ready` | Green | Ready to work on - pick it up! |
+| `status:in-progress` | Yellow | Someone is actively working on it |
+| `status:in-review` | Blue | PR submitted, under review |
+| `status:blocked` | Red | Blocked by external dependency |
+
+#### Priority Labels
+| Label | Color | Meaning |
+|-------|-------|---------|
+| `priority:critical` | Red | Must be done immediately |
+| `priority:high` | Orange | Important, do soon |
+| `priority:medium` | Yellow | Normal priority |
+| `priority:low` | Green | Nice to have, not urgent |
+
+#### Effort Labels
+| Label | Color | Meaning |
+|-------|-------|---------|
+| `effort:small` | Light Green | Less than 1 day of work |
+| `effort:medium` | Light Yellow | 1-3 days of work |
+| `effort:large` | Light Red | 1 week or more |
+
+#### Type Labels
+| Label | Meaning |
+|-------|---------|
+| `type:feature` | New functionality |
+| `type:bug` | Something is broken |
+| `type:docs` | Documentation improvement |
+| `type:refactor` | Code improvement without changing behavior |
+| `type:discussion` | Needs community input before implementation |
+| `type:marketing` | Marketing/promotion task |
+
+#### Other Labels
 | Label | Meaning |
 |-------|---------|
 | `community-bounty` | Open for community contributions with reward |
 | `good first issue` | Beginner-friendly task |
 | `help-wanted` | We need community help |
-| `bounty` | Has associated bounty payment |
+
+### Milestones
+
+Issues are organized into roadmap milestones:
+
+| Milestone | Focus |
+|-----------|-------|
+| **v1.1 - Community Foundation** | Basic community features, testing, docs |
+| **v1.2 - Bot & Automation** | /bounty command, CI/CD pipelines |
+| **v1.3 - Gamification** | Leaderboards, certificates, achievements |
+| **Future/Ideas** | Long-term ideas and feature requests |
 
 ### Payment Process
 
