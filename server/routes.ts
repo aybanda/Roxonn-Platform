@@ -120,7 +120,7 @@ async function handleGitHubAppWebhook(req: Request, res: Response) {
       // ... logic to call storage.upsert/remove ...
       return res.status(200).json({ message: 'Installation event processed.' });
     
-    // --- Handle Issue Closed for Payout --- 
+    // --- Handle Issue Closed for Payout ---
     } else if (event === 'issues' && payload.action === 'closed') {
       log(`Processing App issue closed event for #${payload.issue?.number}`, 'webhook-app');
       setImmediate(() => {
@@ -129,7 +129,26 @@ async function handleGitHubAppWebhook(req: Request, res: Response) {
              log(`Error in background App Issue Closed handler: ${err?.message || err}`, 'webhook-app');
           });
       });
-      return res.status(202).json({ message: 'Webhook received and Issue Closed processing initiated.' }); 
+      return res.status(202).json({ message: 'Webhook received and Issue Closed processing initiated.' });
+
+    // --- Handle Repository Visibility Changes ---
+    } else if (event === 'repository' && (payload.action === 'privatized' || payload.action === 'publicized')) {
+      const repoId = String(payload.repository?.id);
+      const repoName = payload.repository?.full_name;
+      const isPrivate = payload.action === 'privatized';
+      log(`Processing repository visibility change: ${repoName} (${repoId}) -> ${isPrivate ? 'private' : 'public'}`, 'webhook-app');
+
+      try {
+        const updated = await storage.updateRepositoryVisibility(repoId, isPrivate);
+        if (updated) {
+          log(`Successfully updated visibility for ${repoName} to ${isPrivate ? 'private' : 'public'}`, 'webhook-app');
+        } else {
+          log(`Repository ${repoName} not found in registered repositories`, 'webhook-app');
+        }
+      } catch (err: any) {
+        log(`Error updating repository visibility: ${err?.message || err}`, 'webhook-app');
+      }
+      return res.status(200).json({ message: 'Repository visibility update processed.' });
 
     // --- Ignore Other Events ---
     } else {

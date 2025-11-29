@@ -56,6 +56,7 @@ export interface IStorage {
   registerRepositoryDirectly(userId: number, githubRepoId: string, githubRepoFullName: string, installationId?: string, isPrivate?: boolean): Promise<any>;
   adjustUserPromptBalance(drizzleTx: any, userId: number, promptsToChange: number, type: string, notes?: string, onrampOrderId?: string): Promise<{ success: boolean; newBalance?: number; error?: string }>;
   getUserPromptBalance(userId: number): Promise<number>;
+  updateRepositoryVisibility(githubRepoId: string, isPrivate: boolean): Promise<boolean>;
 }
 
 // Define PromptTransactionType enum locally if not imported from a shared types file
@@ -421,7 +422,7 @@ export class DatabaseStorage implements IStorage {
     try {
       log(`Checking registration for repo ID ${githubRepoId}`, 'storage');
       const registration = await db.query.registeredRepositories.findFirst({
-        where: eq(registeredRepositories.githubRepoId, githubRepoId) 
+        where: eq(registeredRepositories.githubRepoId, githubRepoId)
       });
       log(`Registration check by ID result: ${registration ? 'Found' : 'Not Found'}`, 'storage');
       return registration || null;
@@ -430,7 +431,28 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
   }
-  
+
+  /**
+   * Update repository visibility (public/private)
+   * Called when GitHub sends repository visibility change webhook
+   */
+  async updateRepositoryVisibility(githubRepoId: string, isPrivate: boolean): Promise<boolean> {
+    try {
+      log(`Updating visibility for repo ${githubRepoId} to isPrivate=${isPrivate}`, 'storage');
+      const result = await db.update(registeredRepositories)
+        .set({ isPrivate })
+        .where(eq(registeredRepositories.githubRepoId, githubRepoId))
+        .returning({ id: registeredRepositories.id });
+
+      const updated = result.length > 0;
+      log(`Repository visibility update result: ${updated ? 'Updated' : 'Not found'}`, 'storage');
+      return updated;
+    } catch (error) {
+      log(`Error updating repository visibility: ${error instanceof Error ? error.message : String(error)}`, 'storage');
+      throw error;
+    }
+  }
+
   /**
    * Get a repository by ID for public access
    * This is used for public API endpoints that don't require authentication
