@@ -735,6 +735,7 @@ router.get(
               xdcPoolRewards: poolInfo?.xdcPoolRewards || "0.0",
               roxnPoolRewards: poolInfo?.roxnPoolRewards || "0.0",
               usdcPoolRewards: poolInfo?.usdcPoolRewards || "0.0",
+              poolInfoError: null, // Indicate successful fetch
             };
           } catch (err: any) {
             log(`Error fetching pool info for repo ${repo.githubRepoId}: ${err.message}`, 'routes-ERROR');
@@ -743,6 +744,7 @@ router.get(
               xdcPoolRewards: "0.0",
               roxnPoolRewards: "0.0",
               usdcPoolRewards: "0.0",
+              poolInfoError: "Unable to fetch pool information. Please try again later.", // Indicate error to user
             };
           }
         })
@@ -775,6 +777,7 @@ router.get(
               ...repo,
               xdcPoolRewards: poolInfo?.xdcPoolRewards || "0.0",
               roxnPoolRewards: poolInfo?.roxnPoolRewards || "0.0",
+              poolInfoError: null, // Indicate successful fetch
               // issues array from poolInfo is also available if needed: poolInfo?.issues
             };
           } catch (err: any) {
@@ -783,6 +786,7 @@ router.get(
               ...repo,
               xdcPoolRewards: "0.0",
               roxnPoolRewards: "0.0",
+              poolInfoError: "Unable to fetch pool information. Please try again later.", // Indicate error to user
             };
           }
         })

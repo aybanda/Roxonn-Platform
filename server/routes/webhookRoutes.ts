@@ -57,7 +57,9 @@ async function handleGitHubAppWebhook(req: Request, res: Response) {
   try {
     // --- Handle Installation Events ---
     if (event === 'installation' || event === 'installation_repositories') {
-      // ... logic to call storage.upsert/remove ...
+      const installationId = (payload as any).installation?.id;
+      log(`Installation event received: ${payload.action}, installation ${installationId}`, 'webhook-app');
+      // TODO: Implement storage.upsert/remove for installation tracking
       return res.status(200).json({ message: 'Installation event processed.' });
 
       // --- Handle Issue Comment for Bounty Commands ---
@@ -219,7 +221,7 @@ router.post('/api/webhook/onramp-money', express.json({
       });
 
       if (!userRecord) {
-        log(`No user found with wallet address ${walletAddress} for Onramp.money transaction`);
+        log(`No user found for Onramp.money transaction (merchantId: ${merchantRecognitionId})`);
         return res.status(200).json({ message: 'Webhook received, but no matching user found' });
       }
 
@@ -304,16 +306,18 @@ router.post('/api/webhook/onramp-money', express.json({
             log(`✅ Activated/renewed subscription for user ${userId} via ${merchantRecognitionId}`, 'subscription');
             log(`Payment details: orderId=${orderId}, txHash=${txHash}, amount=${amountUsdc} USDC`, 'subscription');
           } catch (activationError) {
-            // Log error but don't fail the webhook - return 200 to prevent retries
+            // Log error and return error status to allow webhook retries
             const errorMsg = activationError instanceof Error ? activationError.message : String(activationError);
             log(`❌ CRITICAL: Failed to activate subscription for user ${userId}`, 'subscription-ERROR');
             log(`Error details: ${errorMsg}`, 'subscription-ERROR');
             log(`Payment info: merchantId=${merchantRecognitionId}, orderId=${orderId}, txHash=${txHash}, amount=${amountUsdc}`, 'subscription-ERROR');
 
-            // Still return success to prevent webhook retries
-            return res.status(200).json({
-              message: 'Webhook received, but activation failed',
-              error: errorMsg
+            // Return 500 to indicate failure and allow webhook provider to retry
+            return res.status(500).json({
+              error: 'Subscription activation failed',
+              message: errorMsg,
+              merchantRecognitionId,
+              orderId
             });
           }
         } else {

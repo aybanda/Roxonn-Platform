@@ -162,8 +162,12 @@ router.post('/api/vscode/ai/completions', requireAuth, async (req: Request, res:
         await deductAICredits(user.id, actualCost);
       } catch (deductionError: any) {
         log(`Error deducting AI credits for user ${user.id}: ${deductionError.message}`, 'vscode-ai');
-        // Decide how to handle this: still return response, or error?
-        // For now, log and continue, but this could lead to free usage if deduction fails.
+        // Fail the request to prevent free AI usage when deduction fails
+        // This ensures users are charged for AI services or the request fails
+        return res.status(500).json({ 
+          error: 'Failed to process AI request',
+          details: 'Credit deduction failed. Please try again or contact support.'
+        });
       }
 
       // 4. Log usage for analytics
