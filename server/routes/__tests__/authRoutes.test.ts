@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { Request, Response } from 'express';
+import type { Request, Response, Express } from 'express';
 import { requireAuth } from '../../auth';
 import { db } from '../../db';
 import { users } from '../../../shared/schema';
@@ -60,7 +60,7 @@ describe('Auth Routes', () => {
       user: undefined,
       body: {},
       query: {},
-      session: {} as any,
+      session: {} as Express.Session,
     };
     mockResponse = {
       status: vi.fn().mockReturnThis(),
@@ -80,7 +80,7 @@ describe('Auth Routes', () => {
         githubAccessToken: 'token123', // Should be removed in response
       };
 
-      mockRequest.user = user as any;
+      mockRequest.user = user as Express.User;
 
       // Simulate the route handler
       const sanitizeUserData = (user: any) => {
@@ -120,14 +120,14 @@ describe('Auth Routes', () => {
         xdcWalletAddress: null,
       };
 
-      mockRequest.user = user as any;
+      mockRequest.user = user as Express.User;
       mockRequest.body = {
         role: 'contributor',
         email: 'test@example.com',
       };
 
       // Mock database update
-      (db.update as any).mockReturnValue({
+      vi.mocked(db.update).mockReturnValue({
         set: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
             returning: vi.fn().mockResolvedValue([{
@@ -172,7 +172,7 @@ describe('Auth Routes', () => {
         xdcWalletAddress: 'xdc1234567890123456789012345678901234567890',
       };
 
-      mockRequest.user = user as any;
+      mockRequest.user = user as Express.User;
       mockRequest.body = {
         role: 'contributor',
         email: 'test@example.com',
@@ -191,7 +191,7 @@ describe('Auth Routes', () => {
       mockRequest.user = {
         id: 1,
         username: 'testuser',
-      } as any;
+      } as Express.User;
 
       // Simulate logout
       mockRequest.user = undefined;

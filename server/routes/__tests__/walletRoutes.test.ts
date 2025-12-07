@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { Request, Response } from 'express';
+import type { Request, Response, Express } from 'express';
 import { requireAuth } from '../../auth';
 import { walletService } from '../../walletService';
 import { db } from '../../db';
@@ -46,7 +46,7 @@ describe('Wallet Routes', () => {
         id: 1,
         username: 'testuser',
         xdcWalletAddress: 'xdc1234567890123456789012345678901234567890',
-      } as any,
+      } as Express.User,
       params: {},
       body: {},
     };
@@ -65,8 +65,8 @@ describe('Wallet Routes', () => {
         tokenBalance: '500000000000000000',
       };
 
-      (walletService.getBalance as any).mockResolvedValue('1000000000000000000');
-      (walletService.getUSDCBalance as any).mockResolvedValue('100.00');
+      vi.mocked(walletService.getBalance).mockResolvedValue('1000000000000000000');
+      vi.mocked(walletService.getUSDCBalance).mockResolvedValue('100.00');
 
       // Simulate route handler
       const address = mockRequest.user?.xdcWalletAddress;
@@ -89,7 +89,7 @@ describe('Wallet Routes', () => {
         id: 1,
         username: 'testuser',
         xdcWalletAddress: null,
-      } as any;
+      } as Express.User;
 
       // Simulate route handler
       if (!mockRequest.user?.xdcWalletAddress) {
@@ -104,7 +104,7 @@ describe('Wallet Routes', () => {
       const address = 'xdc1234567890123456789012345678901234567890';
       const balance = '1000000000000000000';
 
-      (walletService.getBalance as any).mockResolvedValue(balance);
+      vi.mocked(walletService.getBalance).mockResolvedValue(balance);
 
       const result = await walletService.getBalance(address);
       expect(result).toBe(balance);
@@ -116,7 +116,7 @@ describe('Wallet Routes', () => {
       const address = 'xdc1234567890123456789012345678901234567890';
       const usdcBalance = '100.00';
 
-      (walletService.getUSDCBalance as any).mockResolvedValue(usdcBalance);
+      vi.mocked(walletService.getUSDCBalance).mockResolvedValue(usdcBalance);
 
       const result = await walletService.getUSDCBalance(address);
       expect(result).toBe(usdcBalance);
@@ -131,7 +131,7 @@ describe('Wallet Routes', () => {
         privateKey: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
       };
 
-      (walletService.getWalletDataForExport as any).mockResolvedValue(walletData);
+      vi.mocked(walletService.getWalletDataForExport).mockResolvedValue(walletData);
 
       const result = await walletService.getWalletDataForExport(userId);
       expect(result).toHaveProperty('address');
